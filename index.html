@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://i.ibb.co/vHDNgZD/cart-3-svgrepo-com-1.png">
+    <title>E-commerce Shop</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f9fafb; /* Light gray background */
+        }
+        .hidden {
+            display: none;
+        }
+        .product-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+      #product-detail-image {
+    width: 100%;
+    max-height: 300px; /* Limit the height */
+    object-fit: contain; /* Ensure the image maintains its aspect ratio */
+}
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        #product-detail {
+            transition: opacity 0.5s;
+        }
+        .cart-animation {
+            animation: bounce 0.5s;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        /* Spinner animation */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3); /* Light border */
+            border-top: 4px solid white; /* Full white border */
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite; /* Infinite spinning animation */
+        }
+    </style>
+</head>
+<body class="font-sans">
+
+    <!-- Full-Screen Message Div with Spinner and Image -->
+    <div id="message" class="fixed inset-0 bg-blue-500 text-white flex flex-col items-center justify-center z-50">
+        <div class="spinner"></div>
+        <h1>SoloKart</h1>
+    </div>
+
+    <!-- Navbar -->
+    <nav id="navbar" class="bg-white shadow-md hidden">
+        <div class="max-w-6xl mx-auto flex items-center justify-between p-4">
+            <h1 class="text-2xl font-bold text-indigo-600" tabindex="0" role="heading" aria-level="1">
+                SoloKart
+            </h1>
+            <div class="relative">
+                <input type="text" id="search-input" placeholder="Search..." 
+                       class="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm transition duration-300 w-20" 
+                       oninput="searchProducts()" aria-label="Search products">
+            </div>
+            <button onclick="toggleCart()" class="relative" aria-label="Shopping cart">
+                <i class="fas fa-shopping-cart text-xl"></i>
+                <span id="cart-count" class="absolute top-1000 right-100 bg-red-500 text-white text-xs font-bold rounded-full px-1 hidden">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content (Hidden by default) -->
+    <div id="main-content" class="hidden">
+        <!-- Hero Banner -->
+        <div class="bg-indigo-600 text-white text-center py-16">
+            <h2 class="text-4xl font-bold mb-2">Welcome to Our Shop!</h2>
+            <p class="text-lg">Discover amazing products at unbeatable prices.</p>
+        </div>
+
+        <!-- Products Section -->
+        <div class="max-w-6xl mx-auto p-4">
+            <h2 class="text-3xl font-bold mb-4">Products</h2>
+            <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Example Product Cards -->
+                 <div class="product-card bg-white p-4 rounded-lg shadow-md" data-category="electronics" tabindex="0" onclick="showDetails('Product 1', 'Description of product 1', 29.99, 'https://i.ibb.co/2hZNJt0/R-6.jpg')">
+      <img src="https://i.ibb.co/2hZNJt0/R-6.jpg"  border="0" alt="Product 1" class="rounded-lg mb-2">
+        <h3 class="text-xl font-semibold mt-2">PC</h3>
+        <p class="text-gray-600">$29999999</p>
+        <button onclick="addToCart('Product 1', 29.99)" class="mt-4 bg-indigo-600 text-white px-4 py-2 rounded-lg w-full hover:bg-indigo-700 transition duration-300 shadow" aria-label="Add Product 1 to cart">
+          <i class="fas fa-cart-plus"></i> Add to Cart
+        </button>
+      </div>
+      <!-- Product Card 2 -->
+      <div class="product-card bg-white p-4 rounded-lg shadow-md" data-category="clothing" tabindex="0" onclick="showDetails('Product 2', 'Description of product 2', 49.99, 'https://i.ibb.co/XSZjyQH/R-7.jpg')">
+        <img src="https://i.ibb.co/XSZjyQH/R-7.jpg" alt="R-7" border="0"  class="rounded-lg mb-2">
+        <h3 class="text-xl font-semibold mt-2">Gaming Mouse</h3>
+        <p class="text-gray-600">$49.99</p>
+        <button onclick="addToCart('Product 2', 49.99)" class="mt-4 bg-indigo-600 text-white px-4 py-2 rounded-lg w-full hover:bg-indigo-700 transition duration-300 shadow" aria-label="Add Product 2 to cart">
+          <i class="fas fa-cart-plus"></i> Add to Cart
+        </button>
+      </div>
+      <!-- Product Card 3 -->
+      <div class="product-card bg-white p-4 rounded-lg shadow-md" data-category="accessories" tabindex="0" onclick="showDetails('Product 3', 'Description of product 3', 19.99, 'https://i.ibb.co/xqgw5hN/OIP-16.jpg')">
+        <img src="https://i.ibb.co/xqgw5hN/OIP-16.jpg" alt="OIP-16" border="0" class="rounded-lg mb-2">
+        <h3 class="text-xl font-semibold mt-2">Product 3</h3>
+        <p class="text-gray-600">$19.99</p>
+        <button onclick="addToCart('Product 3', 19.99)" class="mt-4 bg-indigo-600 text-white px-4 py-2 rounded-lg w-full hover:bg-indigo-700 transition duration-300 shadow" aria-label="Add Product 3 to cart">
+          <i class="fas fa-cart-plus"></i> Add to Cart
+        </button>
+      </div>
+      <!-- Product Card 4 -->
+      <div class="product-card bg-white p-4 rounded-lg shadow-md" data-category="electronics" tabindex="0" onclick="showDetails('Product 4', 'Description of product 4', 89.99, 'https://i.ibb.co/XyNRwyc/OIP-17.jpg')">
+ <img src="https://i.ibb.co/XyNRwyc/OIP-17.jpg" alt="OIP-17" border="0" class="rounded-lg mb-2">
+        <h3 class="text-xl font-semibold mt-2">Product 4</h3>
+        <p class="text-gray-600">$89.99</p>
+        <button onclick="addToCart('Product 4', 89.99)" class="mt-4 bg-indigo-600 text-white px-4 py-2 rounded-lg w-full hover:bg-indigo-700 transition duration-300 shadow" aria-label="Add Product 4 to cart">
+          <i class="fas fa-cart-plus"></i> Add to Cart
+        </button>
+      </div>
+      <!-- Add more product cards as needed -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Details Modal -->
+    <div id="product-detail-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-lg max-w-lg w-full p-6">
+            <h3 id="product-detail-name" class="text-2xl font-bold mb-2">Product Name</h3>
+            <img id="product-detail-image" src="" alt="Product Image" class="w-full h-64 object-cover mb-4">
+            <p id="product-detail-price" class="text-lg font-semibold text-gray-700 mb-2">$0.00</p>
+            <p id="product-detail-description" class="text-gray-600 mb-4">Product Description</p>
+            <button onclick="addToCartFromDetail()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">
+                Add to Cart
+            </button>
+            <button onclick="closeProductDetails()" class="bg-red-500 text-white px-4 py-2 rounded-lg ml-2 hover:bg-red-600">
+                Close
+            </button>
+        </div>
+    </div>
+
+    <!-- Cart Section (Hidden by default) -->
+    <div id="cart-section" class="fixed inset-0 bg-white bg-opacity-90 hidden z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-lg w-65 w-65">
+            <h3 class="text-2xl font-bold p-4 border-b">Shopping Cart</h3>
+            <div id="cart-items" class="p-4">
+                <p class="text-gray-600">Your cart is empty.</p>
+            </div>
+            <div id="cart-total" class="p-4 border-t">
+                Total: $<span id="cart-total-value">0.00</span>
+            </div>
+            <div class="p-4">
+                <button onclick="toggleCart()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">
+                    Close Cart
+                </button>
+            </div>
+        </div>
+    </div>
+<footer class="bg-gray-900 text-gray-200 py-8">
+  <div class="container mx-auto px-4">
+    <div class="flex flex-col md:flex-row justify-between">
+      <!-- Column 1 -->
+      <div class="mb-6 md:mb-0">
+        <h2 class="text-lg font-semibold">Solokart</h2>
+        <p class="text-sm">Solokart where you come first.</p>
+      </div>
+
+      <!-- Column 2 -->
+      <div class="mb-6 md:mb-0">
+        <h2 class="text-lg font-semibold">Quick Links</h2>
+        <ul class="space-y-2">
+          <li><a href="#" class="hover:text-white">Home</a></li>
+          <li><a href="#" class="hover:text-white">About Us</a></li>
+          <li><a href="#" class="hover:text-white">Services</a></li>
+          <li><a href="#" class="hover:text-white">Contact</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 3 -->
+      <div class="mb-6 md:mb-0">
+        <h2 class="text-lg font-semibold">Contact Us</h2>
+        <ul class="space-y-2">
+          <li>Email: Solokart@info.com</li>
+          <li>Phone: 111111111</li>
+          <li>Address: Dubai</li>
+        </ul>
+      </div>
+      
+      <!-- Column 4 -->
+      <div class="md:mb-0">
+        <h2 class="text-lg font-semibold">Follow Us</h2>
+        <div class="flex space-x-4">
+          <a href="#" class="text-gray-400 hover:text-white">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-white">
+            <i class="fab fa-twitter"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-white">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-white">
+            <i class="fab fa-linkedin-in"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom line -->
+    <div class="mt-8 border-t border-gray-700 pt-4 text-center">
+      <p>&copy; 2024 SoloKart. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+    <script>
+        let cart = [];
+        let selectedProduct = {};
+
+        const cartCount = document.getElementById('cart-count');
+        const cartItemsDiv = document.getElementById('cart-items');
+        const cartTotalValue = document.getElementById('cart-total-value');
+
+        // Hide the loading screen and show the main content after 5 seconds
+        setTimeout(() => {
+            const messageDiv = document.getElementById('message');
+            const navbar = document.getElementById('navbar');
+            const mainContent = document.getElementById('main-content');
+            
+            messageDiv.classList.add('hidden'); // Hide loading screen
+            navbar.classList.remove('hidden'); // Show navbar
+            mainContent.classList.remove('hidden'); // Show main content
+        }, 1000);
+
+        function toggleCart() {
+            const cartSection = document.getElementById('cart-section');
+            cartSection.classList.toggle('hidden');
+        }
+
+        function addToCart(productName, productPrice) {
+            const existingProduct = cart.find(item => item.name === productName);
+            if (existingProduct) {
+                existingProduct.quantity += 1;
+            } else {
+                cart.push({ name: productName, price: productPrice, quantity: 1 });
+            }
+            updateCart();
+        }
+
+        function updateCart() {
+            cartCount.innerText = cart.length;
+            cartCount.classList.remove('hidden');
+            cartItemsDiv.innerHTML = '';
+            let total = 0;
+
+            cart.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.classList.add('border-b', 'p-2', 'flex', 'justify-between');
+                itemDiv.innerHTML = `<span>${item.name} x${item.quantity}</span><span>$${(item.price * item.quantity).toFixed(2)}</span>`;
+                cartItemsDiv.appendChild(itemDiv);
+                total += item.price * item.quantity;
+            });
+
+            cartTotalValue.innerText = total.toFixed(2);
+        }
+
+        function searchProducts() {
+            const searchInput = document.getElementById('search-input').value.toLowerCase();
+            const productCards = document.querySelectorAll('.product-card');
+            productCards.forEach(card => {
+                const productName = card.querySelector('h3').innerText.toLowerCase();
+                if (productName.includes(searchInput)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+           function showDetails(name, description, price, imageUrl) {
+        selectedProduct = { name, price };
+
+        document.getElementById('product-detail-name').innerText = name;
+        document.getElementById('product-detail-description').innerText = description;
+        document.getElementById('product-detail-price').innerText = `$${price.toFixed(2)}`;
+        document.getElementById('product-detail-image').src = imageUrl;
+
+        document.getElementById('product-detail-modal').classList.remove('hidden');
+    }
+
+    function closeProductDetails() {
+        document.getElementById('product-detail-modal').classList.add('hidden');
+    }
+
+    function addToCartFromDetail() {
+        addToCart(selectedProduct.name, selectedProduct.price);
+        closeProductDetails();
+    }
+
+
+
+        function closeProductDetails() {
+            document.getElementById('product-detail-modal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html> 
